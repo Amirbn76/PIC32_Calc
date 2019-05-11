@@ -18,7 +18,7 @@ int main(){
     // int itmp[10];
     ANSELA = 0x0000;
     ANSELB = 0x0000;
-    CNPDA = 0x001F;
+    CNPDA  = 0x001F;
     
     SYSTEM_Initialize();
     LCD_Initialize();
@@ -31,15 +31,15 @@ int main(){
         LCDGoto(6, 0);
         ctmp = readKey();
         if(ctmp != '\0'){
-            LCDPutStr("test");
-            LCDGoto(0, 1);
-            LCDPutChar(ctmp);
-            delay(200);
-        }
+            delay(50);
+            if(ctmp==readKey()){        //Debounce Added
+                LCDPutStr("test");
+                LCDGoto(0, 1);
+                LCDPutChar(ctmp);
+                delay(200);
+            }
+        }    
     }
-    
-    
-    
     return 0;
 }
 
