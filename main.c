@@ -16,30 +16,48 @@ char readKey();
 int main(){
     char ctmp;
     // int itmp[10];
-    ANSELA = 0x0000;
-    ANSELB = 0x0000;
-    CNPDA  = 0x001F;
+   
+    
     
     SYSTEM_Initialize();
     LCD_Initialize();
     LCDClear();
-   
+    ANSELA = 0x0000;
+    ANSELB = 0x0000;
+    CNPDA = 0x001F;
+    TRISA |= 0x001f; // i
+    TRISB &= 0x0fff; // o
+    int a=0;
+    int i=0;
     while(1){
+        if(a==0){
         LCDPutCmd(LCD_HOME);
+        
         LCDGoto(0, 0);
         LCDPutStr("Hello!");
         LCDGoto(6, 0);
+        a=1;
+        }
         ctmp = readKey();
-        if(ctmp != '\0'){
+        if(ctmp != '!'){
             delay(50);
-            if(ctmp==readKey()){        //Debounce Added
-                LCDPutStr("test");
-                LCDGoto(0, 1);
+            //if(ctmp == readKey()){
+               // LCDPutStr("test");
+                LCDGoto(i, 1);
+                i++;
                 LCDPutChar(ctmp);
                 delay(200);
-            }
-        }    
+            //}
+        }else if(ctmp == '!'){
+            LCDGoto(i, 1);
+            i++;
+            LCDPutChar('?');
+            delay(1000);
+        }
     }
+    
+    
+    
     return 0;
 }
 
@@ -79,87 +97,80 @@ int charToInt(char c){
 }
 
 //------------------------------------------------------------------------------
-char readKey(){ // technical debt 
+char readKey(){ // technical debt
     char c;
-    TRISA = 0x001F; // i
-    TRISB = 0x0000; // o
-    
+   
     LATBbits.LATB12 = 1;
     LATBbits.LATB13 = 0;
     LATBbits.LATB14 = 0;
     LATBbits.LATB15 = 0;
-    switch(PORTA){
-        case 0x01:
+
+    if(PORTAbits.RA0 == 1)
             return '1';
-        case 0x02:
+    else if(PORTAbits.RA1==1)
             return '2';
-        case 0x04:
+    else if(PORTAbits.RA2==1)
             return '3';
-        case 0x08:
+    else if(PORTAbits.RA3==1)
             return '+';
-        case 0x10:
+    else if(PORTAbits.RA4==1)
             return '-';
-        default:
-            c = '\0';
-    }
+    else
+         c = '!';
     
     LATBbits.LATB12 = 0;
     LATBbits.LATB13 = 1;
     LATBbits.LATB14 = 0;
     LATBbits.LATB15 = 0;
-    switch(PORTA){
-        case 0x01:
+    
+    if(PORTAbits.RA0 == 1)
             return '4';
-        case 0x02:
+    else if(PORTAbits.RA1==1)
             return '5';
-        case 0x04:
+    else if(PORTAbits.RA2==1)
             return '6';
-        case 0x08:
+    else if(PORTAbits.RA3==1)
             return '*';
-        case 0x10:
+    else if(PORTAbits.RA4==1)
             return '/';
-        default:
-            c = '\0';
-    }
+    else
+         c = '!';
     
     LATBbits.LATB12 = 0;
     LATBbits.LATB13 = 0;
     LATBbits.LATB14 = 1;
     LATBbits.LATB15 = 0;
-    switch(PORTA){
-        case 0x01:
+    
+    if(PORTAbits.RA0 == 1)
             return '7';
-        case 0x02:
+    else if(PORTAbits.RA1==1)
             return '8';
-        case 0x04:
+    else if(PORTAbits.RA2==1)
             return '9';
-        case 0x08:
+    else if(PORTAbits.RA3==1)
             return '.';
-        case 0x10:
+    else if(PORTAbits.RA4==1)
             return 'd';
-        default:
-            c = '\0';
-    }
+    else
+         c = '!';
     
     LATBbits.LATB12 = 0;
     LATBbits.LATB13 = 0;
     LATBbits.LATB14 = 0;
     LATBbits.LATB15 = 1;
-    switch(PORTA){
-        case 0x01:
-            return '(';
-        case 0x02:
-            return '0';
-        case 0x04:
-            return ')';
-        case 0x08:
-            return 'a';
-        case 0x10:
-            return '=';
-        default:
-            c = '\0';
-    }
-
     
+    if(PORTAbits.RA0 == 1)
+            return '(';
+    else if(PORTAbits.RA1==1)
+            return '0';
+    else if(PORTAbits.RA2==1)
+            return ')';
+    else if(PORTAbits.RA3==1)
+            return 'a';
+    else if(PORTAbits.RA4==1)
+            return '=';
+    else
+         c = '!';
+
     return c;
 }
