@@ -14,11 +14,8 @@ char readKey();
 
 //--------------------------------------------------------------------------Main
 int main(){
-    char ctmp;
-    // int itmp[10];
-   
-    
-    
+    char ctmp; 
+    int mem[100];
     SYSTEM_Initialize();
     LCD_Initialize();
     LCDClear();
@@ -32,19 +29,19 @@ int main(){
     while(1){
         if(a == 0){
             LCDPutCmd(LCD_HOME);
-
             LCDGoto(0, 0);
             LCDPutStr("Hello!");
             a = 1;
         }
         ctmp = readKey();
         if(ctmp != '!'){
-            delay(50);
+            delay(10);
             if(ctmp == readKey()){
                 LCDGoto(i, 1);
+                mem[i] = ctmp;
                 i++;
                 LCDPutChar(ctmp);
-                delay(200);
+                delay(10);
             }
         }else if(ctmp == '!'){
             LCDGoto(i, 1);
