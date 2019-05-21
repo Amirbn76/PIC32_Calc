@@ -1,21 +1,22 @@
 #include <xc.h>
-#include "lcd.h"
-#include "mcc.h"
+#include "mcc_generated_files/lcd.h"
+#include "mcc_generated_files/mcc.h"
 
 //--------------------------------------------------------------Global Variables
-char stack[100];
+int error = 0;
 
 //---------------------------------------------------------------------Prototype
 void delay(unsigned long int t);
 double calc(int a, int b, char op);
-void error();
+void showError();
 int charToInt(char c);
 char readKey();
+void intToChar();
 
 //--------------------------------------------------------------------------Main
 int main(){
-    char ctmp; 
-    int mem[100];
+    char ctmp[100];
+    double calc_result;
     SYSTEM_Initialize();
     LCD_Initialize();
     LCDClear();
@@ -33,17 +34,22 @@ int main(){
             LCDPutStr("Hello!");
             a = 1;
         }
-        ctmp = readKey();
-        if(ctmp != '!'){
+        ctmp[i] = readKey();
+        if(ctmp[i] != '!'){
             delay(10);
-            if(ctmp == readKey()){
+            if(ctmp[i] == readKey() && ctmp[i] != '='){
                 LCDGoto(i, 1);
-                mem[i] = ctmp;
+                LCDPutChar(ctmp[i]);
                 i++;
-                LCDPutChar(ctmp);
-                delay(10);
+            }else if(ctmp[i] == readKey() && ctmp[i] == '='){
+                LCDGoto(i, 1);
+                LCDPutChar(ctmp[i]);
+                calc_result = calc( charToInt(ctmp[i - 3]) , charToInt(ctmp[i - 1]) , ctmp[i - 2] );
+                i++;
+                // double to char
+                i++;
             }
-        }else if(ctmp == '!'){
+        }else if(ctmp[i] == '!'){
             LCDGoto(i, 1);
             i++;
             LCDPutChar('$');
@@ -64,25 +70,26 @@ void delay(unsigned long int t){
 
 //------------------------------------------------------------------------------
 double calc(int a, int b, char op){
-    switch(op){
-        case '+':
-            return a + b;
-        case '-':
-            return a - b;
-        case '*':
-            return a * b;
-        case '/':
-            if(b != 0)
-                return a / b;
-            if(b == 0)
-                error();
+    if(op == '+'){
+        return a + b;
+    }else if(op == '-'){
+        return a - b;
+    }else if(op == '*'){
+        return a * b;
+    }else if(op == '/'){
+        if(!b){
+            showError();
+            return 0;
+        }else if(b)
+            return a / b;
     }
 }
 
 //------------------------------------------------------------------------------
-void error(){
+void showError(){ // technical debt
     LCDClear();
-    //LCD
+    LCDPutStr("error");
+    error++;
 }
 int charToInt(char c){
     int i = 0;
@@ -108,8 +115,8 @@ void intToChar(char mem[],int n){
             mem[1] = chB;
             mem[2] = chC;
             mem[3] = chfrac;
+    
 }
-
 //------------------------------------------------------------------------------
 char readKey(){ // technical debt
     char c;
