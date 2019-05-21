@@ -95,6 +95,24 @@ int charToInt(char c){
         return i;
     }
 }
+void intToChar(char mem[],int n){
+    int A,B,C;
+    int frac;
+    char chA,chB,chC,chfrac;
+    C = n % 10;
+    B = (n-C) % 100;
+    A = (n-C-B) / 100;
+    frac = n % 1;
+    chA = '0'+A;
+    chB = '0'+B;
+    chC = '0'+C;
+    chfrac = '0'+frac;
+    
+            mem[0] = chA;
+            mem[1] = chB;
+            mem[2] = chC;
+            mem[3] = chfrac;
+}
 
 //------------------------------------------------------------------------------
 char readKey(){ // technical debt
