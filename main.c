@@ -14,11 +14,8 @@ char readKey();
 
 //--------------------------------------------------------------------------Main
 int main(){
-    char ctmp;
-    // int itmp[10];
-   
-    
-    
+    char ctmp; 
+    int mem[100];
     SYSTEM_Initialize();
     LCD_Initialize();
     LCDClear();
@@ -27,31 +24,29 @@ int main(){
     CNPDA = 0x001F;
     TRISA |= 0x001f; // i
     TRISB &= 0x0fff; // o
-    int a=0;
-    int i=0;
+    int a = 0;
+    int i = 0;
     while(1){
-        if(a==0){
-        LCDPutCmd(LCD_HOME);
-        
-        LCDGoto(0, 0);
-        LCDPutStr("Hello!");
-        LCDGoto(6, 0);
-        a=1;
+        if(a == 0){
+            LCDPutCmd(LCD_HOME);
+            LCDGoto(0, 0);
+            LCDPutStr("Hello!");
+            a = 1;
         }
         ctmp = readKey();
         if(ctmp != '!'){
-            delay(50);
-            //if(ctmp == readKey()){
-               // LCDPutStr("test");
+            delay(10);
+            if(ctmp == readKey()){
                 LCDGoto(i, 1);
+                mem[i] = ctmp;
                 i++;
                 LCDPutChar(ctmp);
-                delay(200);
-            //}
+                delay(10);
+            }
         }else if(ctmp == '!'){
             LCDGoto(i, 1);
             i++;
-            LCDPutChar('?');
+            LCDPutChar('$');
             delay(1000);
         }
     }
@@ -86,7 +81,8 @@ double calc(int a, int b, char op){
 
 //------------------------------------------------------------------------------
 void error(){
-    LCDPutStr("Error!");
+    LCDClear();
+    //LCD
 }
 int charToInt(char c){
     int i = 0;
@@ -123,15 +119,15 @@ char readKey(){ // technical debt
     LATBbits.LATB14 = 0;
     LATBbits.LATB15 = 0;
 
-    if(PORTAbits.RA0 == 1)
+    if(PORTAbits.RA0)
             return '1';
-    else if(PORTAbits.RA1==1)
+    else if(PORTAbits.RA1)
             return '2';
-    else if(PORTAbits.RA2==1)
+    else if(PORTAbits.RA2)
             return '3';
-    else if(PORTAbits.RA3==1)
+    else if(PORTAbits.RA3)
             return '+';
-    else if(PORTAbits.RA4==1)
+    else if(PORTAbits.RA4)
             return '-';
     else
          c = '!';
@@ -141,15 +137,15 @@ char readKey(){ // technical debt
     LATBbits.LATB14 = 0;
     LATBbits.LATB15 = 0;
     
-    if(PORTAbits.RA0 == 1)
+    if(PORTAbits.RA0)
             return '4';
-    else if(PORTAbits.RA1==1)
+    else if(PORTAbits.RA1)
             return '5';
-    else if(PORTAbits.RA2==1)
+    else if(PORTAbits.RA2)
             return '6';
-    else if(PORTAbits.RA3==1)
+    else if(PORTAbits.RA3)
             return '*';
-    else if(PORTAbits.RA4==1)
+    else if(PORTAbits.RA4)
             return '/';
     else
          c = '!';
@@ -159,15 +155,15 @@ char readKey(){ // technical debt
     LATBbits.LATB14 = 1;
     LATBbits.LATB15 = 0;
     
-    if(PORTAbits.RA0 == 1)
+    if(PORTAbits.RA0)
             return '7';
-    else if(PORTAbits.RA1==1)
+    else if(PORTAbits.RA1)
             return '8';
-    else if(PORTAbits.RA2==1)
+    else if(PORTAbits.RA2)
             return '9';
-    else if(PORTAbits.RA3==1)
+    else if(PORTAbits.RA3)
             return '.';
-    else if(PORTAbits.RA4==1)
+    else if(PORTAbits.RA4)
             return 'd';
     else
          c = '!';
@@ -177,15 +173,15 @@ char readKey(){ // technical debt
     LATBbits.LATB14 = 0;
     LATBbits.LATB15 = 1;
     
-    if(PORTAbits.RA0 == 1)
+    if(PORTAbits.RA0)
             return '(';
-    else if(PORTAbits.RA1==1)
+    else if(PORTAbits.RA1)
             return '0';
-    else if(PORTAbits.RA2==1)
+    else if(PORTAbits.RA2)
             return ')';
-    else if(PORTAbits.RA3==1)
+    else if(PORTAbits.RA3)
             return 'a';
-    else if(PORTAbits.RA4==1)
+    else if(PORTAbits.RA4)
             return '=';
     else
          c = '!';
